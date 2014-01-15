@@ -2,6 +2,7 @@ package my.app.client;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,11 @@ public class LauncherActivity extends Activity {
 		this.btnStop = (Button) findViewById(R.id.buttonstop);
 		this.ipfield = (EditText) findViewById(R.id.ipfield);
 		this.portfield = (EditText) findViewById(R.id.portfield);
+
+		// Update fields
+		SharedPreferences settings = this.getSharedPreferences("preferences", 0);
+		this.ipfield.setText(settings.getString("ip", K.serverIp));
+		this.portfield.setText(Integer.toString(settings.getInt("port", K.serverPort)));
 
 		this.btnStart.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
