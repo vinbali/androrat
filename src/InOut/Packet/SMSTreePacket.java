@@ -7,40 +7,40 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class SMSTreePacket implements Packet{
+
+public class SMSTreePacket implements Packet {
 
 	ArrayList<SMSPacket> list;
 
 	public SMSTreePacket() {
-		
+
 	}
-	
+
 	public SMSTreePacket(ArrayList<SMSPacket> ar) {
-		list = ar;
+		this.list = ar;
 	}
-	
+
 	public byte[] build() {
 		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out = new ObjectOutputStream(bos);
-			out.writeObject(list);
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			final ObjectOutputStream out = new ObjectOutputStream(bos);
+			out.writeObject(this.list);
 			return bos.toByteArray();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return null;
 		}
 	}
 
+	public ArrayList<SMSPacket> getList() {
+		return this.list;
+	}
+
 	public void parse(byte[] packet) {
-		ByteArrayInputStream bis = new ByteArrayInputStream(packet);
+		final ByteArrayInputStream bis = new ByteArrayInputStream(packet);
 		ObjectInputStream in;
 		try {
 			in = new ObjectInputStream(bis);
-			list = (ArrayList<SMSPacket>) in.readObject();
-		} catch (Exception e) {
-		}
-	}
-
-	public ArrayList<SMSPacket> getList() {
-		return list;
+			this.list = (ArrayList<SMSPacket>) in.readObject();
+		} catch (final Exception e) {}
 	}
 }

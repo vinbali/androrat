@@ -2,6 +2,10 @@
 
 package out;
 
+import in.Demux;
+import in.Receiver;
+import inout.Controler;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,106 +13,86 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-
-
-import out.Mux;
-
-import in.Demux;
-import in.Receiver;
-import inout.Controler;
-
-public class Connection
-{
+public class Connection {
 	Socket s;
 	String ip = "localhost";
 	int port = 5555;
 	DataOutputStream out;
 	DataInputStream in;
-	
+
 	boolean stop = false;
 	ByteBuffer readInstruction;
 	Mux m;
-	Demux dem ;
+	Demux dem;
 	Controler controler;
-	Receiver receive ;
+	Receiver receive;
 
-	public Connection(String ip, int port)
-	{
+	public Connection(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 	}
 
-	public Connection(String ip, int port, Controler ctrl)
-	{
+	public Connection(String ip, int port, Controler ctrl) {
 		this.ip = ip;
 		this.port = port;
 		this.controler = ctrl;
 	}
 
-	public boolean connect()
-	{
-		try
-		{
-			s = new Socket(ip, port);
-			in = new DataInputStream(s.getInputStream());
-			out = new DataOutputStream(s.getOutputStream());
-			m = new Mux(out);
-			dem = new Demux(controler, "moi");
-			receive = new Receiver(s);
-			return true;
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
+	public boolean accept(ServerSocket ss) {
+		try {
+			this.s = ss.accept();
 
-	public boolean reconnect()
-	{
-		return connect();
-	}
-
-	public boolean accept(ServerSocket ss)
-	{
-		try
-		{
-			s = ss.accept();
-
-			in = new DataInputStream(s.getInputStream());
-			out = new DataOutputStream(s.getOutputStream());
-			m = new Mux(out);
+			this.in = new DataInputStream(this.s.getInputStream());
+			this.out = new DataOutputStream(this.s.getOutputStream());
+			this.m = new Mux(this.out);
 			return true;
 
-		} catch (IOException e)
-		{
+		} catch (final IOException e) {
 
 			e.printStackTrace();
 			return false;
 		}
 	}
 
-	public ByteBuffer getInstruction() throws Exception
-	{
-		readInstruction = receive.read();
-		
-		if(dem.receive(readInstruction))
-			readInstruction.compact();
+	public boolean connect() {
+		try {
+			this.s = new Socket(this.ip, this.port);
+			this.in = new DataInputStream(this.s.getInputStream());
+			this.out = new DataOutputStream(this.s.getOutputStream());
+			this.m = new Mux(this.out);
+			this.dem = new Demux(this.controler, "moi");
+			this.receive = new Receiver(this.s);
+			return true;
+		} catch (final IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public ByteBuffer getInstruction() throws Exception {
+		this.readInstruction = this.receive.read();
+
+		if (this.dem.receive(this.readInstruction))
+			this.readInstruction.compact();
 		else
-			readInstruction.clear();
-		
-		return readInstruction;
+			this.readInstruction.clear();
+
+		return this.readInstruction;
 	}
 
-	public void sendData(int chan, byte[] packet)
-	{
-		m.send(chan, packet);
+	public boolean reconnect() {
+		return this.connect();
 	}
-	
+
+	public void sendData(int chan, byte[] packet) {
+		this.m.send(chan, packet);
+	}
+
 	public void stop() {
 		try {
-			s.close();
-		} catch (IOException e) {
-			
+			this.s.close();
+		} catch (final IOException e) {
+
 		}
 	}
 }

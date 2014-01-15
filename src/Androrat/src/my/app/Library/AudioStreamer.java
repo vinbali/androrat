@@ -9,104 +9,108 @@ import android.media.AudioRecord;
 import android.media.AudioRecord.OnRecordPositionUpdateListener;
 import android.util.Log;
 
+
 public class AudioStreamer {
 
 	public final String TAG = "AudioStreamer";
 	public boolean stop = false;
-	
+
 	public BlockingQueue<byte[]> bbq = new LinkedBlockingQueue<byte[]>();
-	
+
 	int frequency = 11025;
 	int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
-	
+
 	int bufferSizeRecorder;
-	//int bufferSizePlayer;
+	// int bufferSizePlayer;
 	byte[] buffer;
 	byte[] buff; // pour le methode directe
 	AudioRecord audioRecord;
-	//AudioTrack audioTrack;
+	// AudioTrack audioTrack;
 	Thread threcord;
 	Context ctx;
-	int chan ;
-	
+	int chan;
+
 	public AudioStreamer(OnRecordPositionUpdateListener c, int source, int chan) {
-		this.chan = chan ;
-		bufferSizeRecorder = AudioRecord.getMinBufferSize(frequency, channelConfiguration, audioEncoding);
-		audioRecord = new AudioRecord(source, frequency, channelConfiguration, audioEncoding, bufferSizeRecorder);
-		//audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, frequency, channelConfiguration, audioEncoding, bufferSizeRecorder);
-		
-		audioRecord.setPositionNotificationPeriod(512);
-		audioRecord.setRecordPositionUpdateListener(c);
-		
-		//bufferSizePlayer = AudioTrack.getMinBufferSize(frequency, channelConfiguration, audioEncoding);
-		//audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,frequency, channelConfiguration, audioEncoding, bufferSizePlayer,	AudioTrack.MODE_STREAM);
+		this.chan = chan;
+		this.bufferSizeRecorder = AudioRecord.getMinBufferSize(this.frequency,
+			this.channelConfiguration, this.audioEncoding);
+		this.audioRecord = new AudioRecord(source, this.frequency, this.channelConfiguration,
+			this.audioEncoding, this.bufferSizeRecorder);
+		// audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+		// frequency, channelConfiguration, audioEncoding, bufferSizeRecorder);
 
-		threcord = new Thread(
-				new Runnable() {
-					public void run() {
-						record();
-					}
-				});
+		this.audioRecord.setPositionNotificationPeriod(512);
+		this.audioRecord.setRecordPositionUpdateListener(c);
 
+		// bufferSizePlayer = AudioTrack.getMinBufferSize(frequency,
+		// channelConfiguration, audioEncoding);
+		// audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,frequency,
+		// channelConfiguration, audioEncoding, bufferSizePlayer,
+		// AudioTrack.MODE_STREAM);
 
-	}
-	
-	public void run() {
-		Log.i(TAG, "Launch record thread");
-		stop = false;
-		threcord.start();
-	}
-	
-	public void record() {
-		try {
-			if (audioRecord.getState() == AudioRecord.STATE_UNINITIALIZED) {
-				Log.e(TAG, "Initialisation failed !");
-				audioRecord.release();
-				audioRecord = null;
-				return;
+		this.threcord = new Thread(new Runnable() {
+			public void run() {
+				AudioStreamer.this.record();
 			}
-			
-			buffer = new byte[bufferSizeRecorder];
-			audioRecord.startRecording();
+		});
 
-			while (!stop) {
-				int bufferReadResult = audioRecord.read(buffer, 0, bufferSizeRecorder);
-				// soit bbq
-				byte[] tmp = new byte[bufferReadResult];
-				System.arraycopy(buffer, 0, tmp, 0, bufferReadResult);
-				bbq.add(tmp);
-				// soit direct
-				//buff = new byte[bufferReadResult];
-				//System.arraycopy(buffer, 0, buff, 0, bufferReadResult);
-
-			}
-
-			audioRecord.stop();
-
-		} catch (Throwable t) {
-			Log.e("AudioRecord", "Recording Failed");
-		}
-		
 	}
-	
+
+	public int getChannel() {
+		return this.chan;
+	}
+
 	public byte[] getData() {
-		//return buff;
-		//ou 
+		// return buff;
+		// ou
 		try {
-			if(!bbq.isEmpty()) {
-				return bbq.take();
-			}
-		} catch (InterruptedException e) {
-		}
+			if (!this.bbq.isEmpty())
+				return this.bbq.take();
+		} catch (final InterruptedException e) {}
 		return null;
 	}
-	
-	public void stop() {
-		stop = true;
+
+	public void record() {
+		try {
+			if (this.audioRecord.getState() == AudioRecord.STATE_UNINITIALIZED) {
+				Log.e(this.TAG, "Initialisation failed !");
+				this.audioRecord.release();
+				this.audioRecord = null;
+				return;
+			}
+
+			this.buffer = new byte[this.bufferSizeRecorder];
+			this.audioRecord.startRecording();
+
+			while (!this.stop) {
+				final int bufferReadResult = this.audioRecord.read(this.buffer, 0,
+					this.bufferSizeRecorder);
+				// soit bbq
+				final byte[] tmp = new byte[bufferReadResult];
+				System.arraycopy(this.buffer, 0, tmp, 0, bufferReadResult);
+				this.bbq.add(tmp);
+				// soit direct
+				// buff = new byte[bufferReadResult];
+				// System.arraycopy(buffer, 0, buff, 0, bufferReadResult);
+
+			}
+
+			this.audioRecord.stop();
+
+		} catch (final Throwable t) {
+			Log.e("AudioRecord", "Recording Failed");
+		}
+
 	}
-	
-	public int getChannel() {
-		return chan;
+
+	public void run() {
+		Log.i(this.TAG, "Launch record thread");
+		this.stop = false;
+		this.threcord.start();
+	}
+
+	public void stop() {
+		this.stop = true;
 	}
 }

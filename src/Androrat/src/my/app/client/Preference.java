@@ -1,25 +1,20 @@
 package my.app.client;
 
 import android.os.Bundle;
-
 import android.preference.PreferenceActivity;
 
- 
 
 public class Preference extends PreferenceActivity {
 
- 
+	/** Called when the activity is first created. */
 
-    /** Called when the activity is first created. */
- 
-    @Override
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-    public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        super.onCreate(savedInstanceState);
- 
-        addPreferencesFromResource(R.xml.preferences);
+		addPreferencesFromResource(R.xml.preferences);
 
-    }
+	}
 
 }

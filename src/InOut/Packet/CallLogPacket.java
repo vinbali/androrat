@@ -7,40 +7,40 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class CallLogPacket implements Packet{
+
+public class CallLogPacket implements Packet {
 
 	private ArrayList<CallPacket> list;
 
 	public CallLogPacket() {
-		
+
 	}
-	
+
 	public CallLogPacket(ArrayList<CallPacket> ar) {
-		list = ar;
+		this.list = ar;
 	}
-	
+
 	public byte[] build() {
 		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out = new ObjectOutputStream(bos);
-			out.writeObject(list);
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			final ObjectOutputStream out = new ObjectOutputStream(bos);
+			out.writeObject(this.list);
 			return bos.toByteArray();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return null;
 		}
 	}
 
+	public ArrayList<CallPacket> getList() {
+		return this.list;
+	}
+
 	public void parse(byte[] packet) {
-		ByteArrayInputStream bis = new ByteArrayInputStream(packet);
+		final ByteArrayInputStream bis = new ByteArrayInputStream(packet);
 		ObjectInputStream in;
 		try {
 			in = new ObjectInputStream(bis);
-			list = (ArrayList<CallPacket>) in.readObject();
-		} catch (Exception e) {
-		}
-	}
-	
-	public ArrayList<CallPacket> getList() {
-		return list;
+			this.list = (ArrayList<CallPacket>) in.readObject();
+		} catch (final Exception e) {}
 	}
 }

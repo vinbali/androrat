@@ -1,6 +1,5 @@
 package my.app.client;
 
-import my.app.client.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,43 +7,47 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+
 public class LauncherActivity extends Activity {
-    /** Called when the activity is first created. */
-	
+	/** Called when the activity is first created. */
+
 	Intent Client, ClientAlt;
 	Button btnStart, btnStop;
 	EditText ipfield, portfield;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
 
-        Client = new Intent(this, Client.class);
-        Client.setAction(LauncherActivity.class.getName());
-        
-        btnStart = (Button) findViewById(R.id.buttonstart);
-        btnStop = (Button) findViewById(R.id.buttonstop);
-        ipfield = (EditText) findViewById(R.id.ipfield);
-        portfield = (EditText) findViewById(R.id.portfield);
-        
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-            	Client.putExtra("IP", ipfield.getText().toString());
-            	Client.putExtra("PORT", new Integer(portfield.getText().toString()));
-                startService(Client);
-                btnStart.setEnabled(false);
-                btnStop.setEnabled(true);
-                //finish();                
-            }
-        });
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
 
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {             
-                stopService(Client);  
-                btnStart.setEnabled(true);
-                btnStop.setEnabled(false);
-                //finish(); 
-            }
-        });
-    }
+		this.Client = new Intent(this, Client.class);
+		this.Client.setAction(LauncherActivity.class.getName());
+
+		this.btnStart = (Button) findViewById(R.id.buttonstart);
+		this.btnStop = (Button) findViewById(R.id.buttonstop);
+		this.ipfield = (EditText) findViewById(R.id.ipfield);
+		this.portfield = (EditText) findViewById(R.id.portfield);
+
+		this.btnStart.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				LauncherActivity.this.Client.putExtra("IP", LauncherActivity.this.ipfield.getText()
+					.toString());
+				LauncherActivity.this.Client.putExtra("PORT", new Integer(
+					LauncherActivity.this.portfield.getText().toString()));
+				startService(LauncherActivity.this.Client);
+				LauncherActivity.this.btnStart.setEnabled(false);
+				LauncherActivity.this.btnStop.setEnabled(true);
+				// finish();
+			}
+		});
+
+		this.btnStop.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				stopService(LauncherActivity.this.Client);
+				LauncherActivity.this.btnStart.setEnabled(true);
+				LauncherActivity.this.btnStop.setEnabled(false);
+				// finish();
+			}
+		});
+	}
 }

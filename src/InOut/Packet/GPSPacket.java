@@ -2,34 +2,30 @@ package Packet;
 
 import java.nio.ByteBuffer;
 
-public class GPSPacket implements Packet
-{
+
+public class GPSPacket implements Packet {
 
 	private double longitude;
 	private double latitude;
 	private double altitude;
 	private float speed;
 	private float accuracy;
-	
 
-	public GPSPacket()
-	{
-		
+	public GPSPacket() {
+
 	}
-	
-	public GPSPacket(double lat, double lon, double alt, float speed, float acc)
-	{
-		this.latitude = lat ;
-		this.longitude = lon ;
+
+	public GPSPacket(double lat, double lon, double alt, float speed, float acc) {
+		this.latitude = lat;
+		this.longitude = lon;
 		this.altitude = alt;
 		this.speed = speed;
 		this.accuracy = acc;
 	}
-	
-	public byte[] build()
-	{
-		ByteBuffer b = ByteBuffer.allocate(32);
-		System.out.println("Longitude : "+longitude);
+
+	public byte[] build() {
+		final ByteBuffer b = ByteBuffer.allocate(32);
+		System.out.println("Longitude : " + this.longitude);
 		b.putDouble(this.longitude);
 		b.putDouble(this.latitude);
 		b.putDouble(this.altitude);
@@ -38,41 +34,33 @@ public class GPSPacket implements Packet
 		return b.array();
 	}
 
-	public void parse(byte[] packet)
-	{
-		ByteBuffer b = ByteBuffer.wrap(packet);
+	public float getAccuracy() {
+		return this.accuracy;
+	}
+
+	public double getAltitude() {
+		return this.altitude;
+	}
+
+	public double getLatitude() {
+		return this.latitude;
+	}
+
+	public double getLongitude() {
+		return this.longitude;
+	}
+
+	public float getSpeed() {
+		return this.speed;
+	}
+
+	public void parse(byte[] packet) {
+		final ByteBuffer b = ByteBuffer.wrap(packet);
 		this.longitude = b.getDouble();
 		this.latitude = b.getDouble();
 		this.altitude = b.getDouble();
 		this.speed = b.getFloat();
 		this.accuracy = b.getFloat();
-	}
-
-	
-
-	public double getLongitude()
-	{
-		return longitude;
-	}
-
-	public double getLatitude()
-	{
-		return latitude;
-	}
-
-	public double getAltitude()
-	{
-		return altitude;
-	}
-
-	public float getSpeed()
-	{
-		return speed;
-	}
-
-	public float getAccuracy()
-	{
-		return accuracy;
 	}
 
 }

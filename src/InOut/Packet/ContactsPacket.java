@@ -9,40 +9,39 @@ import java.util.ArrayList;
 
 import utils.Contact;
 
-public class ContactsPacket implements Packet{
+public class ContactsPacket implements Packet {
 
 	ArrayList<Contact> list;
 
 	public ContactsPacket() {
-		
+
 	}
-	
+
 	public ContactsPacket(ArrayList<Contact> ar) {
-		list = ar;
+		this.list = ar;
 	}
-	
+
 	public byte[] build() {
 		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out = new ObjectOutputStream(bos);
-			out.writeObject(list);
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			final ObjectOutputStream out = new ObjectOutputStream(bos);
+			out.writeObject(this.list);
 			return bos.toByteArray();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return null;
 		}
 	}
 
+	public ArrayList<Contact> getList() {
+		return this.list;
+	}
+
 	public void parse(byte[] packet) {
-		ByteArrayInputStream bis = new ByteArrayInputStream(packet);
+		final ByteArrayInputStream bis = new ByteArrayInputStream(packet);
 		ObjectInputStream in;
 		try {
 			in = new ObjectInputStream(bis);
-			list = (ArrayList<Contact>) in.readObject();
-		} catch (Exception e) {
-		}
-	}
-	
-	public ArrayList<Contact> getList() {
-		return list;
+			this.list = (ArrayList<Contact>) in.readObject();
+		} catch (final Exception e) {}
 	}
 }
