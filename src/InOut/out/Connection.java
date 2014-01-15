@@ -89,6 +89,8 @@ public class Connection {
 	}
 
 	public void stop() {
+		if (null == s)
+			return;
 		try {
 			this.s.close();
 		} catch (final IOException e) {
