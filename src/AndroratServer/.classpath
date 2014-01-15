@@ -3,5 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="INOUT_LIBRARY"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/yscialom/Projets/android/androrat/src/api/forms-1.3.0.jar"/>
+	<classpathentry kind="lib" path="/home/yscialom/Projets/android/androrat/src/api/JMapViewer.jar"/>
+	<classpathentry kind="lib" path="/home/yscialom/Projets/android/androrat/src/api/jna-3.4.0.jar"/>
+	<classpathentry kind="lib" path="/home/yscialom/Projets/android/androrat/src/api/platform-3.4.0.jar"/>
+	<classpathentry kind="lib" path="/home/yscialom/Projets/android/androrat/src/api/vlcj-2.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
